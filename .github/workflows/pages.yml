@@ -1,0 +1,43 @@
+# Rebuilds site/feed.json from YouTube, Bluesky and X, then deploys site/ to
+# GitHub Pages. Nothing is committed back: each run deploys a fresh copy.
+name: Refresh feeds and deploy
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "scripts/fetch_feeds.py", ".github/workflows/pages.yml"]
+  schedule:
+    - cron: "17 */3 * * *"   # every 3 hours
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # Skipped (not failed) until Pages is switched on: set the repository
+    # variable PAGES_ENABLED=true (Settings → Secrets and variables → Actions).
+    if: vars.PAGES_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch latest posts
+        run: python scripts/fetch_feeds.py site/feed.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
