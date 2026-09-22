@@ -145,7 +145,7 @@ main { display: grid; gap: 24px; }
 .stats { display: flex; gap: 18px; margin-top: 10px; color: var(--ink-2); font-size: 13px; }
 
 /* X */
-.x-body { padding: 14px 18px; display: grid; gap: 4px; max-height: 820px; overflow-y: auto; }
+.x-body { padding: 14px 18px; display: grid; gap: 4px; max-height: 820px; overflow-y: auto; overflow-x: hidden; }
 .x-body .twitter-tweet { margin: 0 auto !important; }
 .x-follow { text-align: center; padding: 36px 18px; }
 .x-follow svg { width: 40px; height: 40px; color: var(--xx); }
